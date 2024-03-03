@@ -56,11 +56,21 @@ function Edit({
   attributes,
   setAttributes
 }) {
-  const currentYear = new Date().getFullYear().toString();
   const {
+    fallbackCurrentYear,
     showStartingYear,
     startingYear
   } = attributes;
+  const currentYear = new Date().getFullYear().toString();
+  // When the block loads, set the fallbackCurrentYear attribute to the
+  // current year if it's not already set.
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (currentYear !== fallbackCurrentYear) {
+      setAttributes({
+        fallbackCurrentYear: currentYear
+      });
+    }
+  }, [currentYear, fallbackCurrentYear, setAttributes]);
 
   // Set the display date
   let displayDate;
@@ -88,6 +98,46 @@ function Edit({
   }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)()
   }, "\xA9 ", displayDate));
+}
+
+/***/ }),
+
+/***/ "./src/save.js":
+/*!*********************!*\
+  !*** ./src/save.js ***!
+  \*********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ save)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
+
+
+function save({
+  attributes
+}) {
+  const {
+    fallbackCurrentYear,
+    showStartingYear,
+    startingYear
+  } = attributes;
+  if (!fallbackCurrentYear) {
+    return null;
+  }
+  let displayDate;
+  if (showStartingYear && startingYear) {
+    displayDate = startingYear + '–' + fallbackCurrentYear;
+  } else {
+    displayDate = fallbackCurrentYear;
+  }
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save()
+  }, "\xA9 ", displayDate);
 }
 
 /***/ }),
@@ -148,7 +198,7 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/copyright-date-block","version":"0.1.0","title":"Copyright Date Block","category":"widgets","description":"Display your site’s copyright date.","example":{},"attributes":{"showStartingYear":{"type":"boolean"},"startingYear":{"type":"string"}},"supports":{"color":{"background":false,"text":true},"html":false,"typography":{"fontSize":true}},"textdomain":"copyright-date-block","editorScript":"file:./index.js","render":"file:./render.php"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/copyright-date-block","version":"0.1.0","title":"Copyright Date Block","category":"widgets","description":"Display your site’s copyright date.","example":{},"attributes":{"fallbackCurrentYear":{"type":"string"},"showStartingYear":{"type":"boolean"},"startingYear":{"type":"string"}},"supports":{"color":{"background":false,"text":true},"html":false,"typography":{"fontSize":true}},"textdomain":"copyright-date-block","editorScript":"file:./index.js","render":"file:./render.php"}');
 
 /***/ })
 
@@ -232,7 +282,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/edit.js");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/block.json");
+/* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./save */ "./src/save.js");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./block.json */ "./src/block.json");
 
 /**
  * Registers a new block provided a unique name and an object defining its behavior.
@@ -244,6 +295,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Internal dependencies
  */
+
 
 
 const calendarIcon = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
@@ -260,15 +312,13 @@ const calendarIcon = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg",
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_3__.name, {
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, {
   /**
    * @see ./edit.js
    */
   edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],
   icon: calendarIcon,
-  save: () => {
-    return null;
-  }
+  save: _save__WEBPACK_IMPORTED_MODULE_3__["default"]
 });
 })();
 

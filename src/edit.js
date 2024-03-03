@@ -12,7 +12,7 @@ import { __ } from '@wordpress/i18n';
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-
+import { useEffect } from 'react';
 /**
  * The edit function describes the structure of your block in the context of the
  * PanelBody: This is a component that creates a collapsible panel. It's often used in the sidebar of the block editor for block settings.
@@ -30,8 +30,15 @@ import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
  * @return {Element} Element to render.
  */
 export default function Edit({ attributes, setAttributes }) {
+	const { fallbackCurrentYear, showStartingYear, startingYear } = attributes;
 	const currentYear = new Date().getFullYear().toString();
-	const { showStartingYear, startingYear } = attributes;
+	// When the block loads, set the fallbackCurrentYear attribute to the
+    // current year if it's not already set.
+    useEffect( () => {
+        if ( currentYear !== fallbackCurrentYear ) {
+            setAttributes( { fallbackCurrentYear: currentYear } );
+        }
+    }, [ currentYear, fallbackCurrentYear, setAttributes ] );
 
 	// Set the display date
 	let displayDate;
